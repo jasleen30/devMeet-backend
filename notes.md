@@ -26,4 +26,21 @@ app.get("ab*cd",(req, res) =>{
 });
 > any of the regex works in routes
 
+EPISODE 5:
+Error Handling
+// err must be the first parameter
+app.get("/user, (err,req, res, next) =>{
+    if(err) {
+        res.status(500).send("something went wrong");
+    }
+})
 
+// Good way to use try catch
+app.get("/getUserData", (req,res) =>{
+    try {
+        throw new Error("jhfdjf");
+        res.send("User Data Sent");
+    } catch(err) {
+        res.status(500).send("Some Error cntact support Team");
+    }
+})
