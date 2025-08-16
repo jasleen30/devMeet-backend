@@ -5,13 +5,14 @@ const app = express();
 app.use("/", (req, res)=>{
     res.send("Hiii Jasleen!!!");
 });
-
-app.get("/hello",(req,res) =>{
+// This will only handle GET call to /user, if we take type as GET this will work
+app.get("/user",(req,res) =>{
     res.send("hello hello hello!");
 });
-
-app.use("/test", (req,res) =>{
-    res.send("Hello from the server");
+// This will handlde POST call to /user, if we take type as POST this will work
+app.post("/user", async(req,res) =>{
+    console.log(req.body);
+    res.send("Data successfully saved to the database!!");
 });
 
 app.listen(3000, () =>{
