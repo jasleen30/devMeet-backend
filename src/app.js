@@ -2,20 +2,34 @@ const express = require("express");
 
 const app = express();
 
-app.use("/", (req, res)=>{
-    res.send("Hiii Jasleen!!!");
-});
+// app.use("/route",rh,[rh2,rh3],rh4,rh5); rh=> route handler
 
-// This will only handle GET call to /user, if we take type as GET this will work
-app.get("/user/:userId/:name/:password",(req,res) =>{
-    console.log(req.params);
-    res.send({firstName:"Jasleen", lastName:"Kaur"});
-});
-// This will handlde POST call to /user, if we take type as POST this will work
-app.post("/user", async(req,res) =>{
-    console.log(req.body);
-    res.send("Data successfully saved to the database!!");
-});
+app.get("/user", (req, res, next) =>{
+    console.log("Handling the route user!!");
+    next();
+},
+(req, res, next) => {
+    console.log("Handling the route user 2!!");
+
+    // res.send("2nd Response!!");
+    next();
+},
+(req, res, next) => {
+    console.log("Handling the route user 3!!");
+
+    // res.send("3rd Response!!");
+    next();
+},
+(req, res, next) =>{
+    console.log("Handling the route user 4!!");
+    // res.send("4th Response!!");
+    next();
+},
+(req, res, next) => {
+    console.log("Handling the route user 5!!");
+    res.send("5th Response!!");
+}
+);
 
 app.listen(3000, () =>{
     console.log("Server is connected to port 3000......")
