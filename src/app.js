@@ -57,6 +57,7 @@ app.patch("/user/:userId", async(req, res) =>{
     const userId = req.params?.userId;
     const data = req.body;
     try {
+        // only allowed keys must be there in request body, 
         const ALLOWED_UPDATES = ["photoUrl", "about", "gender", "age", "skills"];
         const isUpdateAllowed = Object.keys(data).every((k) =>
             ALLOWED_UPDATES.includes(k)
@@ -67,10 +68,10 @@ app.patch("/user/:userId", async(req, res) =>{
         if (data?.skills.length > 10) {
             throw new Error("Skills cannot be more than 10");
         }
-        
+
         const user = await User.findByIdAndUpdate({_id: userId}, data, {
             returnDocument: "after",
-            runValidators: true,
+            runValidators: true, // bydefault validators not run on update, but we want validations on update so use this field.for example in the model we allowed few gender but if we add something else on update it will not verify, so to make it possible we have to add field "runvalidators"
         });
         res.status(200).send("User supdated successfully");
     } catch (err) {
