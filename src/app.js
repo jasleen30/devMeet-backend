@@ -1,38 +1,26 @@
 const express = require("express");
 const connectDB = require("./config/database");
 const app = express();
-const User = require("./model/user");
+const User = require("./models/user");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
+const dotenv= require('dotenv')
+const cors = require('cors')
 
-app.post("/signup", async(req, res) =>{
-    //Creating a new instance of the User model
-    const user = new User(req.body);
+dotenv.config()
+app.use(cors({
+    origin:'http://localhost:5173',
+    credentials:true
+}))
+app.use(express.json());
+app.use(cookieParser());
 
-    try{
-        // validation of data
-        validateSignUpData(req);
+const authRouter = require("./routes/auth");
+const profileRouter = require("./routes/profile");
+// const requestRouter = require("./routes/request");
 
-        const {firstName, lastName, emailId, password} = req.body;
-
-        // Encrypt the password
-        const passwordHash = await bcrypt.hash(password, 10);
-        console.log(passwordHash);
-
-        // Creating a new instance of the User model
-        const user = new User({
-            firstName,
-            lastName,
-            emailId,
-            password: passwordHash,
-        });
-
-        await user.save();
-        res.send("User Added successfully!");
-    } catch (err) {
-        res.status(400).send("ERROR: " + err.message);
-    }
-});
-
+// Get user by email
 app.get("/user", async(req, res) =>{
     const userEmail = req.body.emailId;
     try {
@@ -70,7 +58,6 @@ app.delete("/user", async (req,res) =>{
 });
 
 // Update data of the user
-
 app.patch("/user/:userId", async(req, res) =>{
     const userId = req.params?.userId;
     const data = req.body;
@@ -95,7 +82,12 @@ app.patch("/user/:userId", async(req, res) =>{
     } catch (err) {
         res.status(400).send("Update failed:" +err.message);
     }
-})
+});
+
+
+app.use("/", authRouter);
+app.use("/", profileRouter);
+// app.use("/", requestRouter);
 
 // Connect to DB
 connectDB()
